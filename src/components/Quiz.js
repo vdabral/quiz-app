@@ -1,16 +1,17 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
-import { Box, Button, Text, RadioCard, RadioGroup , Stack} from "@chakra-ui/react";
+import { Box, Button, Text, RadioGroup , Stack} from "@chakra-ui/react";
+import { Radio } from "./ui/radio"
 
 const Quiz = () => {
     const [questions, setQuestions] = useState([]);
-    const [currentQuestion, setcurrentQuestion] = useState(0);
+    const [currentQuestion, setCurrentQuestion] = useState(0);
     const [score, setScore] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState("");
 
     useEffect(() => {
         axios
-        .get("https://opentdb.com/api.php?amount=10&category=22&difficulty=easy&type=multiple")
+        .get("https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple&encode=url3986")
         .then((response) => {
             setQuestions(response.data.results);
         })
@@ -21,7 +22,7 @@ const Quiz = () => {
             setScore(score + 1);
         }
         selectedAnswer("");
-        setcurrentQuestion(currentQuestion + 1);
+        setCurrentQuestion(currentQuestion + 1);
     };
     if(!questions.length){
         return <Text>Loading questions...</Text>;
@@ -39,15 +40,20 @@ const Quiz = () => {
             <RadioGroup onChange={(value) => setSelectedAnswer(value)} value={selectedAnswer}>
                 <Stack direction="column">
                     {options.map((option, index) => (
-                        <RadioCard key={index} value={option}>{option}</RadioCard>
+                        <Radio key={index} value={option}>{option}</Radio>
                     ))}
                 </Stack>
             </RadioGroup>
-            <Button mt={4} onClick={handleNext} isDisabled={!selectedAnswer} colorScheme="blue">Next</Button>
+            <Button 
+            mt={4} 
+            onClick={handleNext} 
+            isDisabled={!selectedAnswer} 
+            colorScheme="blue">
+            Next</Button>
             {currentQuestion === questions.length-1 && (
                 <Text mt={4}>Your score: {score}/{questions.length}</Text>
             )}
         </Box>
     );
 };
-export default Quiz
+export default Quiz;
